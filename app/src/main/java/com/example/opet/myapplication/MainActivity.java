@@ -17,6 +17,10 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
@@ -39,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         textTerreno.setVisibility(View.GONE);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String endpoint = "https://swapi.co/api/planets/3";
+        String endpoint = "https://swapi.co/api/species";
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, endpoint, null, new Response.Listener<JSONObject>() {
             @Override
@@ -47,15 +51,18 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 //textData.setVisibility(View.VISIBLE);
                 //textData.setText(response.toString());
+                try {
+                    procurarIdiomas(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                formatarSaida(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressBar.setVisibility(View.GONE);
                 textData.setVisibility(View.VISIBLE);
-                textTerreno.setVisibility(View.VISIBLE);
                 textData.setText("Erro ao carregar dados.");
             }
         });
@@ -63,16 +70,28 @@ public class MainActivity extends AppCompatActivity {
         queue.add(objectRequest);
     }
 
-    private void formatarSaida(JSONObject response) {
+    private void formatarSaida(List resultado) {
         textData.setVisibility(View.VISIBLE);
         textTerreno.setVisibility(View.VISIBLE);
-        try {
-            String name = response.getString("name");
-            String terreno = response.getString("terrain");
-            textData.setText("Nome: "+name);
-            textTerreno.setText("Terreno: "+terreno);
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        String saida="";
+        for (int i = 0; i<resultado.size();i++){
+            saida.concat("Nome: " + resultado.get(0).toString() + "Terreno: " + resultado.get(9).toString()+"\n");
+            textData.setText(saida);
         }
+
+    }
+
+    private void  procurarIdiomas(JSONObject response) throws JSONException {
+
+        ArrayList lista = new ArrayList((Collection) response.get("results"));
+
+        List resultado = new ArrayList();
+
+        for (int i = 0; i<lista.size(); i++){
+            resultado.add(lista.get(i));
+        }
+
+        formatarSaida(resultado);
     }
 }
