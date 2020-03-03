@@ -2,6 +2,7 @@
 package com.example.opet.myapplication;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -14,18 +15,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private TextView textData;
-    private TextView textTerreno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         textData = findViewById(R.id.textData);
-        textTerreno = findViewById(R.id.textTerreno);
+
     }
 
     public void carregarDados(View view) {
         progressBar.setVisibility(View.VISIBLE);
         textData.setVisibility(View.GONE);
-        textTerreno.setVisibility(View.GONE);
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String endpoint = "https://swapi.co/api/species";
@@ -51,11 +52,8 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 //textData.setVisibility(View.VISIBLE);
                 //textData.setText(response.toString());
-                try {
-                    procurarIdiomas(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
+                procurarIdiomas(response);
 
             }
         }, new Response.ErrorListener() {
@@ -70,28 +68,29 @@ public class MainActivity extends AppCompatActivity {
         queue.add(objectRequest);
     }
 
-    private void formatarSaida(List resultado) {
+    private void formatarSaida(String saida) {
         textData.setVisibility(View.VISIBLE);
-        textTerreno.setVisibility(View.VISIBLE);
-
-        String saida="";
-        for (int i = 0; i<resultado.size();i++){
-            saida.concat("Nome: " + resultado.get(0).toString() + "Terreno: " + resultado.get(9).toString()+"\n");
-            textData.setText(saida);
-        }
-
+        textData.setText(saida);
     }
 
-    private void  procurarIdiomas(JSONObject response) throws JSONException {
+    private void  procurarIdiomas(@NonNull JSONObject response) {
 
-        ArrayList lista = new ArrayList((Collection) response.get("results"));
 
-        List resultado = new ArrayList();
+        try {
+            JSONArray lista;
+            lista = response.getJSONArray("results");
+            String saida="";
 
-        for (int i = 0; i<lista.size(); i++){
-            resultado.add(lista.get(i));
+            for (int i = 0; i<lista.length();i++){
+                JSONObject aux = (JSONObject) lista.get(i);
+                saida = saida.concat("Especie:  " + aux.getString("name") + "  -  Idioma: " + aux.getString("language") + "\n\n");
+            }
+
+            formatarSaida(saida);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        formatarSaida(resultado);
     }
 }
