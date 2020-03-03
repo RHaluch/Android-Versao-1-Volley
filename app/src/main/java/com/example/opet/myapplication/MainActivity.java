@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private TextView textData;
+    private TextView textTerreno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +30,16 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         textData = findViewById(R.id.textData);
+        textTerreno = findViewById(R.id.textTerreno);
     }
 
     public void carregarDados(View view) {
         progressBar.setVisibility(View.VISIBLE);
         textData.setVisibility(View.GONE);
+        textTerreno.setVisibility(View.GONE);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String endpoint = "https://swapi.co/api/people/1";
+        String endpoint = "https://swapi.co/api/planets/3";
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, endpoint, null, new Response.Listener<JSONObject>() {
             @Override
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 progressBar.setVisibility(View.GONE);
                 textData.setVisibility(View.VISIBLE);
+                textTerreno.setVisibility(View.VISIBLE);
                 textData.setText("Erro ao carregar dados.");
             }
         });
@@ -61,9 +65,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void formatarSaida(JSONObject response) {
         textData.setVisibility(View.VISIBLE);
+        textTerreno.setVisibility(View.VISIBLE);
         try {
             String name = response.getString("name");
+            String terreno = response.getString("terrain");
             textData.setText("Nome: "+name);
+            textTerreno.setText("Terreno: "+terreno);
         } catch (JSONException e) {
             e.printStackTrace();
         }

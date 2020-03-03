@@ -20,7 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Hello World!"
+        android:text="Nome do Planeta:"
+        />
+
+    <TextView
+        android:id="@+id/textTerreno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Terreno:"
         />
     <Button
         android:onClick="carregarDados"
