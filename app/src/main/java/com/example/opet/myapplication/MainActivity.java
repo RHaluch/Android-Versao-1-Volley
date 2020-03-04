@@ -4,6 +4,7 @@ package com.example.opet.myapplication;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,15 +20,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private TextView textData;
+    private String saida = "";
+    private int cont=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,25 +34,29 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         textData = findViewById(R.id.textData);
+        textData.setMovementMethod(new ScrollingMovementMethod());
 
     }
 
-    public void carregarDados(View view) {
-        progressBar.setVisibility(View.VISIBLE);
-        textData.setVisibility(View.GONE);
+    private void trazerJSON (String endpoint){
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String endpoint = "https://swapi.co/api/species";
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, endpoint, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                progressBar.setVisibility(View.GONE);
-                //textData.setVisibility(View.VISIBLE);
-                //textData.setText(response.toString());
 
-                procurarIdiomas(response);
-
+                try {
+                    if(response.getString("next")!="null"){
+                        saida=saida.concat(procurarIdiomas(response));
+                        trazerJSON(response.getString("next"));
+                    }else{
+                        saida=saida.concat(procurarIdiomas(response));
+                        formatarSaida();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -68,13 +70,21 @@ public class MainActivity extends AppCompatActivity {
         queue.add(objectRequest);
     }
 
-    private void formatarSaida(String saida) {
+    public void carregarDados(View view){
+
+        progressBar.setVisibility(View.VISIBLE);
+        textData.setVisibility(View.GONE);
+        String endpoint = "https://swapi.co/api/species";
+        trazerJSON(endpoint);
+    }
+
+    private void formatarSaida() {
+        progressBar.setVisibility(View.GONE);
         textData.setVisibility(View.VISIBLE);
         textData.setText(saida);
     }
 
-    private void  procurarIdiomas(@NonNull JSONObject response) {
-
+    private String procurarIdiomas(@NonNull JSONObject response) {
 
         try {
             JSONArray lista;
@@ -83,14 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 0; i<lista.length();i++){
                 JSONObject aux = (JSONObject) lista.get(i);
-                saida = saida.concat("Especie:  " + aux.getString("name") + "  -  Idioma: " + aux.getString("language") + "\n\n");
+                cont++;
+                saida = saida.concat(String.valueOf(cont)+" Especie:  " + aux.getString("name") + "  -  Idioma: " + aux.getString("language") + "\n");
             }
 
-            formatarSaida(saida);
-
+            return saida;
         } catch (JSONException e) {
             e.printStackTrace();
+            return "";
         }
-
     }
 }
