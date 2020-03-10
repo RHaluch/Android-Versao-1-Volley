@@ -15,13 +15,33 @@
         android:layout_gravity="center"
         android:visibility="gone"
         />
+
     <TextView
-        android:id="@+id/textData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Hello World!"
+        android:enabled="false"
+        android:text="Municipio:"
+    />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textMunicipio"
         />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="Ano:"
+        />
+
+    <EditText
+        android:id="@+id/textAno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
     <Button
         android:onClick="carregarDados"
         android:layout_width="match_parent"

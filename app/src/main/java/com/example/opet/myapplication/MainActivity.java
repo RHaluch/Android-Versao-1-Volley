@@ -1,9 +1,14 @@
 //Mudar para o seu package
 package com.example.opet.myapplication;
 
+import android.icu.text.DecimalFormat;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,7 +25,8 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
-    private TextView textData;
+    private EditText ano;
+    private EditText municipio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,44 +34,61 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         progressBar = findViewById(R.id.progressBar);
-        textData = findViewById(R.id.textData);
+        ano = findViewById(R.id.textAno);
+        municipio = findViewById(R.id.textMunicipio);
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void carregarDados(View view) {
+
+        String codigo = String.valueOf(municipio.getText());
+        int data = Integer.parseInt(ano.getText().toString());
+        String endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno=";
+
+        for (int i = 1; i < 13; i++) {
+            endpoint = endpoint.concat(String.valueOf(data) + String.valueOf(String.format("%02d", i))+"&codigoIbge=" + codigo + "%20&pagina=1");
+            trazerJSON(endpoint);
+            endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno=";
+;        }
+
         progressBar.setVisibility(View.VISIBLE);
-        textData.setVisibility(View.GONE);
+        ano.setVisibility(View.GONE);
+
+    }
+
+    private void trazerJSON(String endpoint) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String endpoint = "https://swapi.co/api/people/1";
+
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, endpoint, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 progressBar.setVisibility(View.GONE);
-                //textData.setVisibility(View.VISIBLE);
-                //textData.setText(response.toString());
+                //formatarSaida(response);
 
-                formatarSaida(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressBar.setVisibility(View.GONE);
-                textData.setVisibility(View.VISIBLE);
-                textData.setText("Erro ao carregar dados.");
+                ano.setVisibility(View.VISIBLE);
+                ano.setText("Erro ao carregar dados.");
             }
         });
 
         queue.add(objectRequest);
     }
 
-    private void formatarSaida(JSONObject response) {
-        textData.setVisibility(View.VISIBLE);
+
+     /*private void formatarSaida(JSONObject response) {
+        textAno.setVisibility(View.VISIBLE);
         try {
             String name = response.getString("name");
-            textData.setText("Nome: "+name);
+            textAno.setText("Nome: "+name);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
