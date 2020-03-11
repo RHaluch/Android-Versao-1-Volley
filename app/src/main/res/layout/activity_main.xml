@@ -20,25 +20,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Municipio:"
+        android:text="Municipio"
+        android:textAlignment="center"
     />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textMunicipio"
+        android:hint="DIGITE O CODIGO DO MUNICIPIO"
+        android:textAlignment="center"
         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Ano:"
+        android:text="Ano"
+        android:textAlignment="center"
         />
 
     <EditText
         android:id="@+id/textAno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="DIGITE O ANO"
+        android:textAlignment="center"
         />
 
 
@@ -47,6 +53,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Carregar dados"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textNome"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textEstado"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/total"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/media"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/maior"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/menor"
         />
 
 </LinearLayout>
