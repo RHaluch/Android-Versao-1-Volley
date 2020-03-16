@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         total.setVisibility(View.VISIBLE);
         total.setText("Total das Bolsas: "+String.valueOf(totalBolsa));
         media.setVisibility(View.VISIBLE);
-        media.setText("Media dos Benefiados: " + String.valueOf(totalBeneficiados/12));
+        media.setText("Media dos Beneficiados: " + String.valueOf(totalBeneficiados/12));
         maior.setVisibility(View.VISIBLE);
         maior.setText("Maior valor: "+String.valueOf(maiorValor)+ " do mês: "+String.valueOf(maiorMes));
         menor.setVisibility(View.VISIBLE);
