@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textNome, textEstado, total, media, maior, menor;
     private String nome="", estado;
     private long totalBolsa=0, totalBeneficiados=0, menorValor, maiorValor;
-    private int maiorMes, menorMes;
+    private int maiorMes, menorMes, contador=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
         String codigo = String.valueOf(municipio.getText());
         int data = Integer.parseInt(ano.getText().toString());
         String endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno=";
+        totalBolsa=0;
+        totalBeneficiados=0;
+        nome="";
+        contador=0;
 
 
         for (int i = 1; i < 13; i++) {
@@ -105,7 +109,10 @@ public class MainActivity extends AppCompatActivity {
                         menorValor = objeto.getLong("valor");
                     }
 
-                    formatarSaida();
+                    contador++;
+                    if(contador==12){
+                        formatarSaida();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
