@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textNome, textEstado, total, media, maior, menor;
     private String nome="", estado;
     private long totalBolsa=0, totalBeneficiados=0, menorValor, maiorValor;
-    private int maiorMes, menorMes, contador=0;
+    private int maiorMes, menorMes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,20 +58,11 @@ public class MainActivity extends AppCompatActivity {
     public void carregarDados(View view) {
 
         progressBar.setVisibility(View.VISIBLE);
-        String codigo = String.valueOf(municipio.getText());
-        int data = Integer.parseInt(ano.getText().toString());
-        String endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno=";
-        totalBolsa=0;
-        totalBeneficiados=0;
-        nome="";
-        contador=0;
+        totalBolsa=0; totalBeneficiados=0; nome="";
+        String endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno="+Integer.parseInt(ano.getText().toString())+"01"+"&codigoIbge=" + String.valueOf(municipio.getText()) + "&pagina=1";
+        trazerJSON(endpoint);
+        formatarSaida();
 
-
-        for (int i = 1; i < 13; i++) {
-            endpoint = endpoint.concat(String.valueOf(data) + String.valueOf(String.format("%02d", i))+"&codigoIbge=" + codigo + "&pagina=1");
-            trazerJSON(endpoint);
-            endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno=";
-        }
     }
 
     private void trazerJSON(String endpoint) {
@@ -81,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET,endpoint,null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+
                 try {
                     JSONObject objeto = (JSONObject) response.get(0);
                     String data = objeto.getString("dataReferencia");
@@ -109,9 +101,10 @@ public class MainActivity extends AppCompatActivity {
                         menorValor = objeto.getLong("valor");
                     }
 
-                    contador++;
-                    if(contador==12){
-                        formatarSaida();
+                    for (int i = 2; i < 13; i++) {
+                        String endpoint = "http://www.transparencia.gov.br/api-de-dados/bolsa-familia-por-municipio?mesAno=";
+                        endpoint = endpoint.concat(Integer.parseInt(ano.getText().toString()) + String.valueOf(String.format("%02d", i))+"&codigoIbge=" + String.valueOf(municipio.getText()) + "&pagina=1");
+                        trazerJSON(endpoint);
                     }
 
                 } catch (JSONException e) {
